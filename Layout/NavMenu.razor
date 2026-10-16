@@ -1,39 +1,29 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">DollhouseCinema</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+﻿<div class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">✳</div>
+        <div class="brand-text">
+            <div class="brand-name">dollhouse cinema</div>
+            <div class="brand-tag">A LITTLE HOME FOR YOUR CINEMATIC OBSESSIONS</div>
+        </div>
     </div>
-</div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+    <nav class="nav">
+        <NavLink class="nav-btn" href="" Match="NavLinkMatch.All">
+            <span class="nav-icon">📽</span> the lobby
+        </NavLink>
+        <NavLink class="nav-btn" href="explore">
+            <span class="nav-icon">⌕</span> explore
+        </NavLink>
+        <NavLink class="nav-btn" href="watchlist">
+            <span class="nav-icon">🎞</span> watchlist
+        </NavLink>
+        <NavLink class="nav-btn" href="screening">
+            <span class="nav-icon">♡</span> the screening room
+        </NavLink>
+        <NavLink class="nav-btn" href="dollhouse">
+            <span class="nav-icon">🗝</span> the dollhouse
+        </NavLink>
     </nav>
+
+    <div class="sidebar-note">made for the love of film ♡</div>
 </div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
