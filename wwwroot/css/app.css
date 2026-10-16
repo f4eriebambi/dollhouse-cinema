@@ -187,6 +187,54 @@ main {
     line-height: 1.5;
 }
 
+/* loader from https://css-loaders.com/progress/ - modified */
+.loader {
+    --s: 40px;
+    height: calc(var(--s) * 0.9);
+    width: calc(var(--s) * 5);
+    --v1: transparent, var(--pink) 0.5deg 108deg, transparent 109deg;
+    --v2: transparent, var(--pink) 0.5deg 36deg, transparent 37deg;
+    -webkit-mask:
+            conic-gradient(from 54deg  at calc(var(--s) * 0.68) calc(var(--s) * 0.57), var(--v1)),
+            conic-gradient(from 90deg  at calc(var(--s) * 0.02) calc(var(--s) * 0.35), var(--v2)),
+            conic-gradient(from 126deg at calc(var(--s) * 0.5)  calc(var(--s) * 0.7),  var(--v1)),
+            conic-gradient(from 162deg at calc(var(--s) * 0.5)  0,                  var(--v2));
+    -webkit-mask-size: var(--s) var(--s);
+    -webkit-mask-composite: xor, destination-over;
+    mask-composite: exclude, add;
+    -webkit-mask-repeat: repeat-x;
+    background: linear-gradient(var(--cherry) 0 0) left / 0% 100% var(--pink-pale) no-repeat;
+    animation: star-fill 0.4s infinite linear;
+}
+
+@keyframes star-fill {
+    90%, 100% {
+        background-size: 100% 100%;
+    }
+}
+
+/* loading screen */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    gap: 20px;
+    background: var(--cream);
+}
+
+.loading-progress-text {
+    color: var(--muted);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
+}
+
+.loading-progress-text::after {
+    content: "opening the dollhouse...";
+}
+
 /* buttons */
 .btn {
     border: 1px solid var(--cherry);
