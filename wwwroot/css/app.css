@@ -38,6 +38,10 @@ body {
     line-height: 1.6;
 }
 
+h1:focus, h2:focus, h3:focus, h4:focus {
+    outline: none;
+}
+
 h1, h2, h3, h4 {
     font-family: var(--font-serif);
     font-weight: 500;
@@ -181,4 +185,72 @@ main {
     font-style: italic;
     font-size: 13px;
     line-height: 1.5;
+}
+
+/* buttons */
+.btn {
+    border: 1px solid var(--cherry);
+    border-radius: 8px;
+    background: var(--cherry);
+    color: #fff8f4;
+    padding: 11px 15px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: transform .15s, opacity .15s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    opacity: .92;
+}
+
+.btn.light {
+    background: var(--cream);
+    border-color: var(--cream);
+    color: var(--cherry);
+}
+
+/* label above headings */
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .17em;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--cherry);
+    margin-bottom: 8px;
+}
+
+/*  banner */
+.hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    padding: 48px;
+    background: var(--cherry);
+    color: #fff4ef;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 40px;
+}
+
+.hero-content {
+    max-width: 550px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero .eyebrow {
+    color: #f0cbd4;
+}
+
+.hero h1 {
+    color: #fff4ef;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #f7e4e6;
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 420px;
+    margin-bottom: 20px;
 }
