@@ -8,7 +8,8 @@ public static class SampleData
     {
         new SampleCollection("weird girl movies", "being a weird girl is cool" ),
         new SampleCollection("comfort <333", "feels like a hug" ),
-        new SampleCollection( "im just a monster in love", "who doesn't like monster romances" )
+        new SampleCollection( "im just a monster in love", "who doesn't like monster romances" ),
+        new SampleCollection( "gothic.", "spooky beauties" )
     };
     public static List<string> CollectionColours { get; } = new()
     {

@@ -397,10 +397,11 @@ main {
     transform: scale(1.03);
 }
 
+
 /* collection cards */
 .collection-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 14px;
 }
 
@@ -412,6 +413,10 @@ main {
     position: relative;
     overflow: hidden;
     transition: border-color .15s, transform .15s, box-shadow .15s;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .collection-card:hover {

@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using DollhouseCinema.Models;
 
@@ -56,10 +55,16 @@ public class TmdbService : ITmdbService
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
             var response = await _http.SendAsync(request);
-            if (!response.IsSuccessStatusCode) continue; // skips if not found
+            if (!response.IsSuccessStatusCode)
+            {
+                continue; // skips if not found
+            }
 
             var data = await response.Content.ReadFromJsonAsync<TmdbMovie>();
-            if (data == null) continue;
+            if (data == null)
+            {
+                continue;
+            }
 
             films.Add(new Film(
                 data.Title,
