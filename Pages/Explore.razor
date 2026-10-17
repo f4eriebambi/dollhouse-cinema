@@ -20,6 +20,7 @@
             class="field" 
             placeholder="Search by title, year or genre ..." 
             @bind="_searchQuery" 
+            @bind:event="oninput"
             @onkeydown="HandleKeyDown" />
         <button class="btn" @onclick="SearchAsync">search</button>
     </div>
@@ -95,7 +96,7 @@
     // if user presses enter key , search
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
-       if (e.Key == "Enter")
+        if (e.Key == "Enter")
         {
             await SearchAsync();
         }
