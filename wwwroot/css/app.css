@@ -512,3 +512,36 @@ main {
     gap: 18px;
     margin-top: 24px;
 }
+
+/* status boxes (empty search , search loading) */
+.status-box {
+    border: 1px dashed var(--pink);
+    border-radius: 14px;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    margin-top: 24px;
+}
+
+.status-icon {
+    font-size: 32px;
+    color: var(--cherry);
+    margin-bottom: 12px;
+}
+
+.status-box h3 {
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-size: 22px;
+}
+
+.status-box p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.btn.outline {
+    background: transparent;
+    border-color: var(--pink);
+    color: var(--cherry);
+}

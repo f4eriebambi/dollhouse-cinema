@@ -26,15 +26,24 @@
 
     @if (_isLoading)
     {
-        <p class="search-progress-text">searching...</p>
+        <div class="status-box">
+            <div class="status-icon">▌│𝄃𝄃𝄂𝄂𝄀𝄁𝄃█║║▌║</div>
+            <h3>Searching ...</h3>
+            <p>Looking through the archives</p>
+        </div>
     }
     else if (_films != null && _films.Count == 0)
     {
-        <p class="search-progress-text">No films found<br />Your film might be hiding. Try another search</p>
+        <div class="status-box">
+            <div class="status-icon">🔎︎</div>
+            <h3>No films found</h3>
+            <p>Your film might be hiding. Try again</p>
+            <button class="btn outline" @onclick="ClearSearch">Clear search</button>
+        </div>
     }
     else if (_films != null)
     {
-        <div class="explore-grid" style="margin-top: 24px;">
+        <div class="explore-grid">
             @foreach (var film in _films)
             {
                 <article class="poster-card">
@@ -85,5 +94,11 @@
         {
             await SearchAsync();
         }
+    }
+    
+    private void ClearSearch()
+    {
+        _searchQuery = "";
+        _films = null;
     }
 }
