@@ -12,3 +12,26 @@
         </NavLink>
     </div>
 </section>
+
+<section class="section">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">films to discover</div>
+            <h2>NOW SHOWING</h2>
+        </div>
+        <NavLink class="link-btn" href="explore">see all films ↗</NavLink>
+    </div>
+
+    <div class="poster-grid">
+        @foreach (var film in SampleData.LobbyFilms)
+        {
+            <article class="poster-card">
+                <img class="poster" src="images/placeholder.jpg" alt="@film.Title poster" />
+                <div class="poster-caption">
+                    <strong>@film.Title</strong>
+                    <span>@film.Year · @film.Genre</span>
+                </div>
+            </article>
+        }
+    </div>
+</section>
