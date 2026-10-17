@@ -44,6 +44,34 @@ public class TmdbService : ITmdbService
             string.IsNullOrEmpty(r.PosterPath) ? "images/placeholder.jpg" : $"https://image.tmdb.org/t/p/w500{r.PosterPath}" 
             )).ToList();
     }
+    
+    // get films by ids
+    public async Task<List<Film>> GetFilmsByIdsAsync(List<int> ids)
+    {
+        var films = new List<Film>();
+
+        foreach (var id in ids)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.themoviedb.org/3/movie/{id}");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+
+            var response = await _http.SendAsync(request);
+            if (!response.IsSuccessStatusCode) continue; // skips if not found
+
+            var data = await response.Content.ReadFromJsonAsync<TmdbMovie>();
+            if (data == null) continue;
+
+            films.Add(new Film(
+                data.Title,
+                ParseYear(data.ReleaseDate),
+                "film",
+                data.Overview,
+                string.IsNullOrEmpty(data.PosterPath) ? "images/placeholder.jpg" : $"https://image.tmdb.org/t/p/w500{data.PosterPath}"
+            ));
+        }
+
+        return films;
+    }
 
     private static int ParseYear(string? releaseDate)
     {
