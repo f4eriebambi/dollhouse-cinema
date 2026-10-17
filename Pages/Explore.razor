@@ -1,7 +1,89 @@
 ﻿@page "/explore"
+@inject ITmdbService TmdbService
+
+@using DollhouseCinema.Services
 
 <PageTitle>explore · dollhouse cinema</PageTitle>
 
-<h1>explore</h1>
+<section class="section">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">now showing</div>
+            <h2>Find your next film.</h2>
+            <p style="color: var(--muted);">a little romance, a little tragedy, a little bit of everything.</p>
+        </div>
+    </div>
 
-coming soon
+    <div class="search-bar">
+        <input 
+            type="text" 
+            class="field" 
+            placeholder="Search by title, year or genre ..." 
+            @bind="_searchQuery" 
+            @onkeydown="HandleKeyDown" />
+        <button class="btn" @onclick="SearchAsync">search</button>
+    </div>
+
+    @if (_isLoading)
+    {
+        <p class="search-progress-text">searching...</p>
+    }
+    else if (_films != null && _films.Count == 0)
+    {
+        <p class="search-progress-text">No films found<br />Your film might be hiding. Try another search</p>
+    }
+    else if (_films != null)
+    {
+        <div class="explore-grid" style="margin-top: 24px;">
+            @foreach (var film in _films)
+            {
+                <article class="poster-card">
+                    <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                    <div class="poster-caption">
+                        <strong>@film.Title</strong>
+                        <span>@film.Year · @film.Genre</span>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@code {
+    private string _searchQuery = "";
+    private List<Film>? _films;
+    private bool _isLoading = false;
+
+    private async Task SearchAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_searchQuery))
+            return;
+
+        _isLoading = true;
+        _films = null; // clear old results
+        StateHasChanged(); // show the loading text
+
+        try
+        {
+            _films = await TmdbService.SearchMoviesAsync(_searchQuery);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"search failed: {ex.Message}");
+            _films = new List<Film>(); // show "no films found" on error
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    // if user presses enter key , search
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+       if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+}
