@@ -9,6 +9,31 @@ public class TmdbService : ITmdbService
     // private properties
     private readonly HttpClient _http;
     private readonly string _token;
+    
+    // genre mapping https://developers.themoviedb.org/3/genres/get-movie-list
+    private static readonly Dictionary<int, string> GenreMap = new()
+    {
+        { 28, "action" }, { 12, "adventure" }, { 16, "animation" }, { 35, "comedy" },
+        { 80, "crime" }, { 99, "documentary" }, { 18, "drama" }, { 10751, "family" },
+        { 14, "fantasy" }, { 36, "history" }, { 27, "horror" }, { 10402, "music" },
+        { 9648, "mystery" }, { 10749, "romance" }, { 878, "sci-fi" }, { 10770, "tv movie" },
+        { 53, "thriller" }, { 10752, "war" }, { 37, "western" }
+    };
+    
+    private static string GetGenreNames(List<int> genreIds)
+    {
+        if (genreIds == null || genreIds.Count == 0)
+        {
+            return "film";
+        }
+        
+        var names = genreIds
+            .Where(id => GenreMap.ContainsKey(id))
+            .Select(id => GenreMap[id])
+            .Take(2); // just take the first 2 so it doesn't get too long
+
+        return string.Join(" · ", names);
+    }
 
     // constructor
     public TmdbService(HttpClient http, IConfiguration config)
@@ -38,7 +63,7 @@ public class TmdbService : ITmdbService
         return data.Results.Select(r => new Film(
             r.Title,
             ParseYear(r.ReleaseDate),
-            "film", // placeholder genre , map to genre todo
+            GetGenreNames(r.GenreIds),
             r.Overview,
             string.IsNullOrEmpty(r.PosterPath) ? "images/placeholder.jpg" : $"https://image.tmdb.org/t/p/w500{r.PosterPath}" 
             )).ToList();
@@ -65,11 +90,13 @@ public class TmdbService : ITmdbService
             {
                 continue;
             }
+            
+            var genreString = data.Genres.Count > 0 ? string.Join(" · ", data.Genres.Take(2).Select(g => g.Name.ToUpper())) : "film";
 
             films.Add(new Film(
                 data.Title,
                 ParseYear(data.ReleaseDate),
-                "film",
+                genreString,
                 data.Overview,
                 string.IsNullOrEmpty(data.PosterPath) ? "images/placeholder.jpg" : $"https://image.tmdb.org/t/p/w500{data.PosterPath}"
             ));
@@ -107,7 +134,21 @@ internal class TmdbMovie
     
     [JsonPropertyName("overview")]
     public string Overview { get; set; } = "";
-    
+
+    [JsonPropertyName("genre_ids")]
+    public List<int> GenreIds { get; set; } = new();
+
+    // gets genres from movie details endpoitn
+    [JsonPropertyName("genres")]
+    public List<TmdbGenre> Genres { get; set; } = new();
+
     [JsonPropertyName("poster_path")]
     public string? PosterPath { get; set; }
+}
+
+// helper class forgenres array
+internal class TmdbGenre
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = "";
 }

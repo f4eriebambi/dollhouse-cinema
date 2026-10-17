@@ -611,6 +611,10 @@ main {
     margin-bottom: 20px;
 }
 
+.modal-header h2 {
+    margin-bottom: 4px;
+}
+
 .modal-film-info {
     display: flex;
     gap: 20px;
