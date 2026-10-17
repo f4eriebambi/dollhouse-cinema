@@ -1,0 +1,37 @@
+@if (Film != null)
+{
+    <div class="modal-backdrop" @onclick="Close">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <button class="modal-close" @onclick="Close">✕</button>
+            
+            <div class="modal-header">
+                <div class="eyebrow">film details</div>
+                <h2>@Film.Title</h2>
+                <span style="color: var(--muted); font-size: 13px;">@Film.Year · @Film.Genre</span>
+            </div>
+
+            <div class="modal-film-info">
+                <img src="@Film.PosterUrl" alt="@Film.Title poster" class="modal-poster" />
+                
+                <div class="modal-details">
+                    <p>@Film.Description</p>
+                    
+                    @if (!string.IsNullOrEmpty(Film.ImdbRating))
+                    {
+                        <div class="imdb-rating">imdb @Film.ImdbRating/10</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Film? Film { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

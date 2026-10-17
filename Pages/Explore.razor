@@ -10,7 +10,7 @@
         <div>
             <div class="eyebrow">now showing</div>
             <h2>Find your next film.</h2>
-            <p style="color: var(--muted);">a little romance, a little tragedy, a little bit of everything.</p>
+            <p style="color: var(--muted);">a little romance, a little tragedy, a little bit of everything</p>
         </div>
     </div>
 
@@ -46,7 +46,9 @@
         <div class="explore-grid">
             @foreach (var film in _films)
             {
-                <article class="poster-card">
+                <article class="poster-card" 
+                         @onclick="() => _selectedFilm = film" 
+                         style="cursor: pointer;">
                     <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
                     <div class="poster-caption">
                         <strong>@film.Title</strong>
@@ -58,10 +60,13 @@
     }
 </section>
 
+<FilmDetailsModal Film="_selectedFilm" OnClose="() => _selectedFilm = null" />
+
 @code {
     private string _searchQuery = "";
     private List<Film>? _films;
     private bool _isLoading = false;
+    private Film? _selectedFilm;
 
     private async Task SearchAsync()
     {
