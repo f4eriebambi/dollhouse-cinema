@@ -11,4 +11,22 @@ public static class SampleData
         new SampleFilm("The Craft", 1996, "horror", "a new student befriends three teenage girls from her high school who practise witchcraft against those who irk them."),
         new SampleFilm("Ginger Snaps", 2000, "horror", "brigitte and ginger are blood sisters who share a common passion for death. when ginger is bitten by a dog, everything changes.")
     };
+    
+    public static List<SampleCollection> CuratedCollections { get; } = new()
+    {
+        new SampleCollection("weird girl movies", "being a weird girl is cool" ),
+        new SampleCollection("comfort <333", "i just want to sleep" ),
+        new SampleCollection( "im just a monster in love", "who doesn't like monster romances" )
+    };
+    public static List<string> CollectionColours { get; } = new()
+    {
+        "colour-pink",
+        "colour-sage",
+        "colour-lace",
+        "colour-noir",
+        "colour-midnight",
+        "colour-cherry",
+        "colour-lilac",
+        "colour-rosewood"
+    };
 }

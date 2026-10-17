@@ -35,3 +35,26 @@
         }
     </div>
 </section>
+
+<section class="section">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">your personal collections</div>
+            <h2>From your dollhouse</h2>
+        </div>
+        <NavLink class="link-btn" href="dollhouse">all collections ↗</NavLink>
+    </div>
+
+    <div class="collection-grid">
+        @for (int i = 0; i < SampleData.CuratedCollections.Count; i++)
+        {
+            var collection = SampleData.CuratedCollections[i];
+            var colourClass = SampleData.CollectionColours[i % SampleData.CollectionColours.Count];
+            <article class="collection-card @colourClass">
+                <div class="eyebrow">0@(i + 1)</div>
+                <h3>@collection.Title</h3>
+                <p>@collection.Description</p>
+            </article>
+        }
+    </div>
+</section>
