@@ -68,7 +68,16 @@
     private List<Film>? _films;
     private bool _isLoading = false;
     private Film? _selectedFilm;
+    
+    // load deault film list
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _films = await TmdbService.GetFilmsByIdsAsync(SampleData.ExploreDefaultIds);
+        _isLoading = false;
+    }
 
+    // search films based on user input
     private async Task SearchAsync()
     {
         if (string.IsNullOrWhiteSpace(_searchQuery))
@@ -76,7 +85,7 @@
 
         _isLoading = true;
         _films = null; // clear old results
-        StateHasChanged(); // show the loading text
+        StateHasChanged(); 
 
         try
         {

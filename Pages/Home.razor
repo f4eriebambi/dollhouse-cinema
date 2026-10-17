@@ -30,11 +30,18 @@
     <div class="poster-grid">
         @if (_films == null)
         {
-            <p>loading films...</p>
+            <div class="status-box" style="grid-column: 1 / -1;">
+                <div class="status-icon">▌│𝄃𝄃𝄂𝄂𝄀𝄁𝄃█║║▌║</div>
+                <h3>loading films ...</h3>
+            </div>
         }
         else if (_films.Count == 0)
         {
-            <p>no films found.</p>
+            <div class="status-box" style="grid-column: 1 / -1;">
+                <div class="status-icon">🔎︎</div>
+                <h3>no films found</h3>
+                <p>something went wrong ... oops</p>
+            </div>
         }
         else
         {
