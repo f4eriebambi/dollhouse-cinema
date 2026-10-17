@@ -28,6 +28,8 @@
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -86,7 +88,8 @@ input, textarea, select {
 .app {
     display: grid;
     grid-template-columns: 225px minmax(0, 1fr);
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 main {
@@ -95,6 +98,8 @@ main {
     max-width: 1300px;
     width: 100%;
     justify-self: center;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 /* sidebar */
@@ -105,6 +110,10 @@ main {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .brand {
@@ -234,6 +243,17 @@ main {
 
 .loading-progress-text::after {
     content: "opening the dollhouse...";
+}
+
+.page-footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
 }
 
 /* buttons */
@@ -370,4 +390,86 @@ main {
 
 .poster-card:hover .poster {
     transform: scale(1.03);
+}
+
+/* collection cards */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.collection-card {
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+
+.collection-card:hover {
+    transform: translateY(-2px);
+}
+
+.collection-card h3 {
+    margin: 6px 0 8px;
+    font-size: 19px;
+}
+
+.collection-card p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    opacity: .8;
+}
+
+/* colour variants — from the curated palette */
+.colour-pink {
+    background: #F1DFE3;
+    border-color: #D9A8B5;
+    color: #392A30;
+}
+
+.colour-sage {
+    background: #EEF0E6;
+    border-color: #A5A18C;
+    color: #392A30;
+}
+
+.colour-lace {
+    background: #EADBCE;
+    border-color: #B89A85;
+    color: #392A30;
+}
+
+.colour-noir {
+    background: #30252B;
+    border-color: #5B414B;
+    color: #F5EAE5;
+}
+
+.colour-midnight {
+    background: #202E46;
+    border-color: #536780;
+    color: #F1EDF2;
+}
+
+.colour-cherry {
+    background: #713747;
+    border-color: #9B5B6C;
+    color: #FFF4EF;
+}
+
+.colour-lilac {
+    background: #E5DFF0;
+    border-color: #B6A5D0;
+    color: #443750;
+}
+
+.colour-rosewood {
+    background: #E7C6AD;
+    border-color: #BD8E70;
+    color: #533B30;
 }
