@@ -6,5 +6,6 @@ public record Film(
     string Title,
     int Year,
     string Genre,
-    string Description
+    string Description,
+    string PosterUrl
 );

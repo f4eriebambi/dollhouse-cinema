@@ -1,4 +1,7 @@
 ﻿@page "/"
+@inject ITmdbService TmdbService
+
+@using DollhouseCinema.Services
 
 <PageTitle>dollhouse cinema</PageTitle>
 
@@ -23,15 +26,26 @@
     </div>
 
     <div class="poster-grid">
-        @foreach (var film in SampleData.LobbyFilms)
+        @if (_films == null)
         {
-            <article class="poster-card">
-                <img class="poster" src="images/placeholder.jpg" alt="@film.Title poster" />
-                <div class="poster-caption">
-                    <strong>@film.Title</strong>
-                    <span>@film.Year · @film.Genre</span>
-                </div>
-            </article>
+            <p>loading films...</p>
+        }
+        else if (_films.Count == 0)
+        {
+            <p>no films found.</p>
+        }
+        else
+        {
+            @foreach (var film in _films)
+            {
+                <article class="poster-card">
+                    <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                    <div class="poster-caption">
+                        <strong>@film.Title</strong>
+                        <span>@film.Year · @film.Genre</span>
+                    </div>
+                </article>
+            }
         }
     </div>
 </section>
@@ -58,3 +72,13 @@
         }
     </div>
 </section>
+
+@code {
+    private List<Film>? _films;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // test for mock search
+        _films = await TmdbService.SearchMoviesAsync("avatar");
+    }
+}
