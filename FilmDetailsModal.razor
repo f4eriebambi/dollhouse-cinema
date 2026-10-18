@@ -1,3 +1,7 @@
+@inject WatchlistService Watchlist
+
+@using DollhouseCinema.Services
+
 @if (Film != null)
 {
     <div class="modal-backdrop" @onclick="Close">
@@ -22,6 +26,17 @@
                     }
                 </div>
             </div>
+            
+            <div style="margin-top: 10px;">
+                @if (Watchlist.IsSaved(Film))
+                {
+                    <button class="btn outline small" @onclick="RemoveFromWatchlist">remove from watchlist</button>
+                }
+                else
+                {
+                    <button class="btn small" @onclick="AddToWatchlist">+ add to watchlist</button>
+                }
+            </div>
         </div>
     </div>
 }
@@ -33,5 +48,23 @@
     private async Task Close()
     {
         await OnClose.InvokeAsync();
+    }
+    
+    private void AddToWatchlist()
+    {
+        if (Film != null)
+        {
+            Watchlist.Add(Film);
+            StateHasChanged(); // tells ui to refresh
+        }
+    }
+
+    private void RemoveFromWatchlist()
+    {
+        if (Film != null)
+        {
+            Watchlist.Remove(Film);
+            StateHasChanged(); // tells ui to refresh
+        }
     }
 }

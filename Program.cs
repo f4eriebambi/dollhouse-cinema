@@ -11,5 +11,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddScoped<ITmdbService, TmdbService>();
 builder.Services.AddScoped<IOmdbService, OmdbService>();
+builder.Services.AddSingleton<WatchlistService>();
 
 await builder.Build().RunAsync();
