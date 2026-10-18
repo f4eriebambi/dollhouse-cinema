@@ -60,4 +60,12 @@ public static class SampleData
         426063,
         96936
     };
+    
+    public static Dictionary<string, List<int>> CollectionFilmIds { get; } = new()
+    {
+        { "weird girl movies", new List<int> { 9871, 18892 } }, 
+        { "comfort <333", new List<int> { 10198, 14191, 11211, 17379, 804 } }, 
+        { "im just a monster in love", new List<int> { 791177, 993784, 399055 } },
+        { "gothic.", new List<int> { 426063, 201085, 310131 } }
+    };
 }

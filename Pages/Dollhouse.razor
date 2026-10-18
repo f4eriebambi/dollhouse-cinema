@@ -1,7 +1,164 @@
 ﻿@page "/dollhouse"
 
+@inject ITmdbService TmdbService
+@inject WatchlistService WatchlistService
+
+@using DollhouseCinema.Services
+
 <PageTitle>the dollhouse · dollhouse cinema</PageTitle>
 
-<h1>the dollhouse</h1>
+<section class="section">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">every story has its place</div>
+            <h2>the dollhouse</h2>
+            <p style="color: var(--muted);">to all the films you've ever loved</p>
+        </div>
+    </div>
 
-coming soon
+    @* collection and keepsakes tabs *@
+    <div class="tabs" style="display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin-bottom: 24px;">
+        <button class="tab-btn @(_activeTab == "collections" ? "active" : "")" @onclick='() => SwitchTab("collections")'>my collections</button>
+        <button class="tab-btn @(_activeTab == "keepsakes" ? "active" : "")" @onclick='() => SwitchTab("keepsakes")'>keepsakes &#9825;</button>
+    </div>
+
+    @* collections tab *@
+    @if (_activeTab == "collections")
+    {
+        @if (_selectedCollection == null)
+        {
+            <div class="collection-grid">
+                @for (int i = 0; i < SampleData.CuratedCollections.Count; i++)
+                {
+                    var collection = SampleData.CuratedCollections[i];
+                    var colourClass = SampleData.CollectionColours[i % SampleData.CollectionColours.Count];
+                    
+                    <article class="collection-card @colourClass" 
+                             @onclick="() => OpenCollection(collection.Title)" 
+                             style="cursor: pointer;">
+                        <div class="eyebrow">0@(i + 1)</div>
+                        <h3>@collection.Title</h3>
+                        <p>@collection.Description</p>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div style="margin-bottom: 20px;">
+                <button class="btn outline small" @onclick="CloseCollection">← back</button>
+            </div>
+            
+            <h2 style="margin-bottom: 20px;">@_selectedCollection</h2>
+
+            @if (_isLoading)
+            {
+                <div class="status-box">
+                    <div class="status-icon">▌│𝄃𝄃𝄂𝄂𝄀𝄁𝄃█║║▌║</div>
+                    <h3>loading films...</h3>
+                </div>
+            }
+            else
+            {
+                <div class="explore-grid">
+                    @foreach (var film in _collectionFilms)
+                    {
+                        <article class="poster-card" @onclick="() => _selectedFilm = film" style="cursor: pointer;">
+                            <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                            <div class="poster-caption">
+                                <strong>@film.Title</strong>
+                                <span>@film.Year · @film.Genre</span>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        }
+    }
+    
+    @* favorites tab *@
+    else if (_activeTab == "keepsakes")
+    {
+        @if (_favFilms.Count == 0)
+        {
+            <div class="status-box">
+                <div class="status-icon">🗝</div>
+                <h3>Your keepsakes are empty &lt;/3</h3>
+                <p>tap the heart on a film to keep it here.</p>
+            </div>
+        }
+        else
+        {
+            <div class="explore-grid">
+                @foreach (var film in _favFilms)
+                {
+                    <article class="poster-card" @onclick="() => _selectedFilm = film" style="cursor: pointer;">
+                        <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                        <div class="poster-caption">
+                            <strong>@film.Title</strong>
+                            <span>@film.Year · @film.Genre</span>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    }
+</section>
+
+<FilmDetailsModal Film="_selectedFilm" OnClose="() => _selectedFilm = null" />
+
+@code {
+    private string _activeTab = "collections";
+    private string? _selectedCollection;
+    private List<Film> _collectionFilms = new();
+    private bool _isLoading = false;
+    private Film? _selectedFilm;
+
+    private List<Film> _favFilms = new();
+
+    protected override void OnInitialized()
+    {
+        LoadFavorites();
+    }
+
+    private void SwitchTab(string tab)
+    {
+        _activeTab = tab;
+        _selectedCollection = null;
+        
+        if (tab == "keepsakes")
+        {
+            LoadFavorites();
+        }
+    }
+
+    private void LoadFavorites()
+    {
+        // combine watchlist and watched films into one list
+        var saved = WatchlistService.GetAll();
+        var watched = WatchlistService.GetWatched();
+        
+        // use Distinct() so we don't get duplicates if a film is in both lists
+        _favFilms = saved.Concat(watched).DistinctBy(f => f.Title).ToList();
+    }
+
+    private async Task OpenCollection(string collectionName)
+    {
+        _selectedCollection = collectionName;
+        _isLoading = true;
+        _collectionFilms = new();
+
+        if (SampleData.CollectionFilmIds.TryGetValue(collectionName, out var ids))
+        {
+            _collectionFilms = await TmdbService.GetFilmsByIdsAsync(ids);
+        }
+
+        _isLoading = false;
+    }
+
+    private void CloseCollection()
+    {
+        _selectedCollection = null;
+        _collectionFilms = new();
+    }
+}

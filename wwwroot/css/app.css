@@ -638,3 +638,20 @@ main {
     color: var(--muted);
     margin-bottom: 12px;
 }
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.tab-btn.active {
+    color: var(--cherry);
+    border-bottom: 2px solid var(--cherry);
+    font-weight: 600;
+}
