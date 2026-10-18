@@ -1,7 +1,49 @@
 ﻿@page "/screening"
 
-<PageTitle>the screening room · dollhouse cinema</PageTitle>
+@inject WatchlistService WatchlistService
 
-<h1>the screening room</h1>
+@using DollhouseCinema.Services
 
-coming soon
+<PageTitle>screening room · dollhouse cinema</PageTitle>
+
+<section class="section">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">your film diary</div>
+            <h2>The Screening Room.</h2>
+            <p style="color: var(--muted);">the films you've watched.</p>
+        </div>
+    </div>
+
+    @if (WatchedFilms.Count == 0)
+    {
+        <div class="status-box">
+            <div class="status-icon">📽</div>
+            <h3>No films watched yet</h3>
+            <p>When you watch a film, mark it as watched to keep a record.</p>
+            <NavLink class="btn outline" href="explore">explore films</NavLink>
+        </div>
+    }
+    else
+    {
+        <div class="explore-grid">
+            @foreach (var film in WatchedFilms)
+            {
+                <article class="poster-card" @onclick="() => _selectedFilm = film" style="cursor: pointer;">
+                    <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                    <div class="poster-caption">
+                        <strong>@film.Title</strong>
+                        <span>@film.Year · @film.Genre</span>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+<FilmDetailsModal Film="_selectedFilm" OnClose="() => _selectedFilm = null" />
+
+@code {
+    private Film? _selectedFilm;
+    private List<Film> WatchedFilms => WatchlistService.GetWatched();
+}
