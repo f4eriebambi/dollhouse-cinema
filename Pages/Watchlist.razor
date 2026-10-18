@@ -1,7 +1,49 @@
 ﻿@page "/watchlist"
 
+@inject WatchlistService WatchlistService
+
+@using DollhouseCinema.Services
+
 <PageTitle>watchlist · dollhouse cinema</PageTitle>
 
-<h1>watchlist</h1>
+<section class="section">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">awaiting its premiere</div>
+            <h2>your watchlist.</h2>
+            <p style="color: var(--muted);">a little list of films calling yuor name</p>
+        </div>
+    </div>
 
-coming soon
+    @if (SavedFilms.Count == 0)
+    {
+        <div class="status-box">
+            <div class="status-icon">♡</div>
+            <h3>no screenings scheduled</h3>
+            <p>save some films for your next movie night</p>
+            <NavLink class="btn outline" href="explore">find a film ↗</NavLink>
+        </div>
+    }
+    else
+    {
+        <div class="explore-grid">
+            @foreach (var film in SavedFilms)
+            {
+                <article class="poster-card" @onclick="() => _selectedFilm = film" style="cursor: pointer;">
+                    <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                    <div class="poster-caption">
+                        <strong>@film.Title</strong>
+                        <span>@film.Year · @film.Genre</span>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+<FilmDetailsModal Film="_selectedFilm" OnClose="() => _selectedFilm = null" />
+
+@code {
+    private Film? _selectedFilm;
+    private List<Film> SavedFilms => WatchlistService.GetAll();
+}
