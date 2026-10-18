@@ -59,4 +59,30 @@ public class WatchlistService
         {
             return _watchedFilms.Any(f => f.Title == film.Title);
         }
+        
+        // storing fav films
+        private readonly List<Film> _favoriteFilms = new();
+
+        public void AddFavorite(Film film)
+        {
+            if (!_favoriteFilms.Any(f => f.Title == film.Title))
+            {
+                _favoriteFilms.Add(film);
+            }
+        }
+
+        public void RemoveFavorite(Film film)
+        {
+            _favoriteFilms.RemoveAll(f => f.Title == film.Title);
+        }
+
+        public List<Film> GetFavorites()
+        {
+            return _favoriteFilms;
+        }
+
+        public bool IsFavorite(Film film)
+        {
+            return _favoriteFilms.Any(f => f.Title == film.Title);
+        }
 }

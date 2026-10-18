@@ -49,6 +49,15 @@
                     <button class="btn small" @onclick="MarkWatched">✓ mark as watched</button>
                 }
                 
+                @* fav film button *@
+                @if (Watchlist.IsFavorite(Film))
+                {
+                    <button class="btn small" @onclick="ToggleFavorite">❤︎</button>
+                }
+                else
+                {
+                    <button class="btn outline small" @onclick="ToggleFavorite">ᰔᩚ</button>
+                }
             </div>
         </div>
     </div>
@@ -95,6 +104,19 @@
         if (Film != null)
         {
             Watchlist.UnmarkWatched(Film);
+            StateHasChanged();
+        }
+    }
+    
+    private void ToggleFavorite()
+    {
+        if (Film != null)
+        {
+            if (Watchlist.IsFavorite(Film))
+                Watchlist.RemoveFavorite(Film);
+            else
+                Watchlist.AddFavorite(Film);
+                
             StateHasChanged();
         }
     }

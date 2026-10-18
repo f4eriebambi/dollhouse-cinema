@@ -49,8 +49,12 @@
                 <button class="btn outline small" @onclick="CloseCollection">← back</button>
             </div>
             
-            <h2 style="margin-bottom: 20px;">@_selectedCollection</h2>
-
+            <h2 style="margin-bottom: 4px;">@_selectedCollection</h2>
+            
+            <p style="color: var(--muted); margin-bottom: 20px;">
+                @SampleData.CuratedCollections.FirstOrDefault(c => c.Title == _selectedCollection)?.Description
+            </p>
+            
             @if (_isLoading)
             {
                 <div class="status-box">
@@ -134,12 +138,7 @@
 
     private void LoadFavorites()
     {
-        // combine watchlist and watched films into one list
-        var saved = WatchlistService.GetAll();
-        var watched = WatchlistService.GetWatched();
-        
-        // use Distinct() so we don't get duplicates if a film is in both lists
-        _favFilms = saved.Concat(watched).DistinctBy(f => f.Title).ToList();
+        _favFilms = WatchlistService.GetFavorites();
     }
 
     private async Task OpenCollection(string collectionName)
