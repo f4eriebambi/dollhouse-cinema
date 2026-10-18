@@ -27,7 +27,9 @@
                 </div>
             </div>
             
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                
+                @* watchlist button *@
                 @if (Watchlist.IsSaved(Film))
                 {
                     <button class="btn outline small" @onclick="RemoveFromWatchlist">remove from watchlist</button>
@@ -36,6 +38,17 @@
                 {
                     <button class="btn small" @onclick="AddToWatchlist">+ add to watchlist</button>
                 }
+                
+                @* watched/screenig room button *@
+                @if (Watchlist.IsWatched(Film))
+                {
+                    <button class="btn outline small" @onclick="UnmarkWatched">remove from watched</button>
+                }
+                else
+                {
+                    <button class="btn small" @onclick="MarkWatched">✓ mark as watched</button>
+                }
+                
             </div>
         </div>
     </div>
@@ -65,6 +78,24 @@
         {
             Watchlist.Remove(Film);
             StateHasChanged(); // tells ui to refresh
+        }
+    }
+    
+    private void MarkWatched()
+    {
+        if (Film != null)
+        {
+            Watchlist.MarkWatched(Film);
+            StateHasChanged();
+        }
+    }
+
+    private void UnmarkWatched()
+    {
+        if (Film != null)
+        {
+            Watchlist.UnmarkWatched(Film);
+            StateHasChanged();
         }
     }
 }

@@ -6,6 +6,8 @@ public class WatchlistService
 {
     // sotring films in memory
     private readonly List<Film> _savedFilms = new();
+    // watched films
+    private readonly List<Film> _watchedFilms = new();
 
     public void Add(Film film)
     {
@@ -30,4 +32,31 @@ public class WatchlistService
     {
         return _savedFilms.Any(f => f.Title == film.Title);
     }
+
+    // watched films
+    public void MarkWatched(Film film)
+        {
+            Remove(film);
+            
+            // no duplicates
+            if (!_watchedFilms.Any(f => f.Title == film.Title))
+            {
+                _watchedFilms.Add(film);
+            }
+        }
+        
+        public void UnmarkWatched(Film film)
+        {
+            _watchedFilms.RemoveAll(f => f.Title == film.Title);
+        }
+    
+        public List<Film> GetWatched()
+        {
+            return _watchedFilms;
+        }
+    
+        public bool IsWatched(Film film)
+        {
+            return _watchedFilms.Any(f => f.Title == film.Title);
+        }
 }
