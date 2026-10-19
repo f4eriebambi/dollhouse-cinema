@@ -105,7 +105,7 @@ public class TmdbService : ITmdbService
         return films;
     }
 
-    private static int ParseYear(string? releaseDate)
+    public static int ParseYear(string? releaseDate)
     {
         if (string.IsNullOrEmpty(releaseDate) || releaseDate.Length < 4)
         {

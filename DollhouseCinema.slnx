@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../DollhouseCinema.UnitTests/DollhouseCinema.UnitTests.csproj" />
+  <Project Path="DollhouseCinema.csproj" />
+</Solution>
