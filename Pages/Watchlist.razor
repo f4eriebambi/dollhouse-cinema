@@ -45,6 +45,7 @@
                     
                     <div class="diary-actions">
                         <button class="btn small" @onclick="() => MarkWatched(film)">mark watched</button>
+                        <button class="btn outline small" @onclick="() => AskToRemove(film)">remove</button>
                     </div>
                 </div>
             }
@@ -52,11 +53,35 @@
     }
 </section>
 
+<ConfirmModal IsVisible="_showConfirm" 
+              Message="@($"Remove {_filmToRemove?.Title} from your watchlist?")" 
+              ConfirmButtonText="yes, remove"
+              OnConfirm="ConfirmRemove" 
+              OnCancel="() => _showConfirm = false" />
+
 @code {
     private List<Film> SavedFilms => WatchlistService.GetAll();
+
+    private bool _showConfirm = false;
+    private Film? _filmToRemove;
 
     private void MarkWatched(Film film)
     {
         WatchlistService.MarkWatched(film);
+    }
+
+    private void AskToRemove(Film film)
+    {
+        _filmToRemove = film;
+        _showConfirm = true;
+    }
+
+    private void ConfirmRemove()
+    {
+        if (_filmToRemove != null)
+        {
+            WatchlistService.Remove(_filmToRemove);
+        }
+        _showConfirm = false;
     }
 }
