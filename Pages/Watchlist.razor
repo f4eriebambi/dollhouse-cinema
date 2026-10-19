@@ -36,6 +36,11 @@
                         <h3>@film.Title</h3>
                         <div class="meta">@film.Year · @film.Genre</div>
                         <p>@film.Description</p>
+                        
+                        @if (!string.IsNullOrEmpty(film.ImdbRating))
+                        {
+                            <div class="imdb-rating">imdb rating: @film.ImdbRating/10</div>
+                        }
                     </div>
                     
                     <div class="diary-actions">
