@@ -26,24 +26,32 @@
     }
     else
     {
-        <div class="explore-grid">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
             @foreach (var film in SavedFilms)
             {
-                <article class="poster-card" @onclick="() => _selectedFilm = film" style="cursor: pointer;">
-                    <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
-                    <div class="poster-caption">
-                        <strong>@film.Title</strong>
-                        <span>@film.Year · @film.Genre</span>
+                <div class="diary-row">
+                    <img class="diary-poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                    
+                    <div class="diary-info">
+                        <h3>@film.Title</h3>
+                        <div class="meta">@film.Year · @film.Genre</div>
+                        <p>@film.Description</p>
                     </div>
-                </article>
+                    
+                    <div class="diary-actions">
+                        <button class="btn small" @onclick="() => MarkWatched(film)">mark watched</button>
+                    </div>
+                </div>
             }
         </div>
     }
 </section>
 
-<FilmDetailsModal Film="_selectedFilm" OnClose="() => _selectedFilm = null" />
-
 @code {
-    private Film? _selectedFilm;
     private List<Film> SavedFilms => WatchlistService.GetAll();
+
+    private void MarkWatched(Film film)
+    {
+        WatchlistService.MarkWatched(film);
+    }
 }
