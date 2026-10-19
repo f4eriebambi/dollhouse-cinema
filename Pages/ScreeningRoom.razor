@@ -15,6 +15,17 @@
         </div>
     </div>
 
+    <div class="stats-row" style="display: flex; gap: 20px; margin-bottom: 30px;">
+        <div class="stat-box">
+            <div class="stat-number">@WatchedFilms.Count</div>
+            <div class="stat-label">films watched</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">@RatedCount</div>
+            <div class="stat-label">films rated</div>
+        </div>
+    </div>
+
     @if (WatchedFilms.Count == 0)
     {
         <div class="status-box">
@@ -26,24 +37,87 @@
     }
     else
     {
-        <div class="explore-grid">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
             @foreach (var film in WatchedFilms)
             {
-                <article class="poster-card" @onclick="() => _selectedFilm = film" style="cursor: pointer;">
-                    <img class="poster" src="@film.PosterUrl" alt="@film.Title poster" />
-                    <div class="poster-caption">
-                        <strong>@film.Title</strong>
-                        <span>@film.Year · @film.Genre</span>
+                <div class="diary-row">
+                    <img class="diary-poster" src="@film.PosterUrl" alt="@film.Title poster" />
+                    
+                    <div class="diary-info">
+                        <h3>@film.Title</h3>
+                        <div class="meta">@film.Year · @film.Genre</div>
+                        <p>@film.Description</p>
+
+                        @if (film.UserRating != null)
+                        {
+                            <div class="user-rating">your rating: <strong>@film.UserRating/10</strong></div>
+                            }
+                        
+                        @if (film.WatchDate != null)
+                        {
+                            <div class="user-rating">watched on: <strong>@film.WatchDate.Value.ToString("dd MMM yyyy")</strong></div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(film.UserNotes))
+                        {
+                            <div class="user-notes">"@film.UserNotes"</div>
+                        }
                     </div>
-                </article>
+                    
+                    <div class="diary-actions">
+                        <button class="btn small" @onclick="() => EditDiary(film)">edit diary</button>
+                        <button class="btn outline small" @onclick="() => AskToRemove(film)">remove</button>
+                    </div>
+                </div>
             }
         </div>
     }
 </section>
 
-<FilmDetailsModal Film="_selectedFilm" OnClose="() => _selectedFilm = null" />
+<DiaryModal Film="_editingFilm" OnClose="() => _editingFilm = null" />
+
+<ConfirmModal IsVisible="_showConfirm" 
+              Message="@($"Remove {_filmToRemove?.Title} from your diary?")" 
+              OnConfirm="ConfirmRemove" 
+              OnCancel="() => _showConfirm = false" />
 
 @code {
-    private Film? _selectedFilm;
+    private Film? _editingFilm;
+    private Film? _confirmDelete;
+    private bool _showConfirm = false;
+    private Film? _filmToRemove;
+    
     private List<Film> WatchedFilms => WatchlistService.GetWatched();
+    private int RatedCount => WatchedFilms.Count(f => f.UserRating != null);
+
+    private void EditDiary(Film film)
+    {
+        _editingFilm = film;
+    }
+    
+    private void ConfirmRemove(Film film)
+    {
+        WatchlistService.UnmarkWatched(film);
+        _confirmDelete = null;
+    }
+
+    private void UnmarkWatched(Film film)
+    {
+        WatchlistService.UnmarkWatched(film);
+    }
+    
+    private void AskToRemove(Film film)
+    {
+        _filmToRemove = film;
+        _showConfirm = true;
+    }
+
+    private void ConfirmRemove()
+    {
+        if (_filmToRemove != null)
+        {
+            WatchlistService.UnmarkWatched(_filmToRemove);
+        }
+        _showConfirm = false;
+    }
 }

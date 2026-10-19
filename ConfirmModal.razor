@@ -1,0 +1,23 @@
+@if (IsVisible)
+{
+    <div class="modal-backdrop" @onclick="OnCancel">
+        <div class="modal-box" @onclick:stopPropagation="true" style="text-align: center; max-width: 400px;">
+            <div class="eyebrow" style="margin-bottom: 12px;">are you sure?</div>
+            <h3 style="margin-bottom: 24px;">@Message</h3>
+
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button class="btn outline small" @onclick="OnCancel">cancel</button>
+                <button class="btn small" @onclick="OnConfirm">@ConfirmButtonText</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public string Message { get; set; } = "";
+    [Parameter] public string ConfirmButtonText { get; set; } = "yes";
+
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+}

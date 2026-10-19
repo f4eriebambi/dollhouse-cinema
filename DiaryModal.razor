@@ -1,0 +1,149 @@
+@if (Film != null)
+{
+    <div class="modal-backdrop" @onclick="AskToClose">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <button class="modal-close" @onclick="AskToClose">✕</button>
+            
+            <div class="modal-header">
+                <div class="eyebrow">a note from the screening room</div>
+                <h2>director's notes.</h2>
+                <span style="color: var(--muted); font-size: 13px;">@Film.Title · @Film.Year</span>
+            </div>
+
+            @* user rating field *@
+            <div style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: bold;">your rating</label>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        var currentRating = i;
+                        <button class="btn @(Film.UserRating == currentRating ? "" : "outline")" 
+                                style="padding: 8px 12px; font-size: 12px;" 
+                                @onclick="() => SetRating(currentRating)">
+                            @currentRating
+                        </button>
+                    }
+                </div>
+                <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">
+                    @(Film.UserRating ?? 0) / 10 · a personal rating
+                </p>
+            </div>
+
+            @* date watched field *@
+            <div style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: bold;">date watched</label>
+                
+                <InputDate class="field" 
+                           @bind-Value="Film.WatchDate" 
+                           max="@DateTime.Today.ToString("yyyy-MM-dd")" 
+                           style="@($"width: 100%; padding: 10px; {(_isDateInvalid ? "border-color: red; outline: 1px solid red;" : "")}")" 
+                           />
+                           
+                @if (_isDateInvalid)
+                {
+                    <div style="color: red; font-size: 11px; margin-top: 4px;">
+                        date cannot be before the film's release year (@Film.Year).
+                    </div>
+                }
+            </div>
+
+            @* user notes field *@
+            <div style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: bold;">after the credits...</label>
+                <textarea class="field" @bind="Film.UserNotes" placeholder="what stayed with you? favourite scenes, little details, how it made you feel..." style="width: 100%; min-height: 100px; padding: 10px; font-family: var(--font-sans);"></textarea>
+            </div>
+
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn outline small" @onclick="AskToClose">cancel</button>
+                <button class="btn small" @onclick="SaveDiary">save to my diary ♡</button>
+            </div>
+        </div>
+    </div>
+}
+
+<ConfirmModal IsVisible="_showDiscardConfirm" 
+              Message="discard changes to your diary?" 
+              ConfirmButtonText="yes, discard"
+              OnConfirm="ConfirmClose" 
+              OnCancel="() => _showDiscardConfirm = false" />
+              
+@code {
+    [Parameter] public Film? Film { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    
+    private bool _isDateInvalid = false;
+    private bool _showDiscardConfirm = false;
+    
+    // track original values to see if user made changes
+    private int? _originalRating;
+    private DateTime? _originalDate;
+    private string? _originalNotes;
+
+    protected override void OnParametersSet()
+    {
+        if (Film != null)
+        {
+            _isDateInvalid = false; 
+            
+            // save original state
+            _originalRating = Film.UserRating;
+            _originalDate = Film.WatchDate;
+            _originalNotes = Film.UserNotes;
+        }
+    }
+
+    private void SetRating(int rating)
+    {
+        if (Film != null) Film.UserRating = rating;
+    }
+
+    private void AskToClose()
+    {
+        if (Film == null) return;
+
+        // check anything actually changed
+        bool hasChanges = Film.UserRating != _originalRating || 
+                          Film.WatchDate != _originalDate || 
+                          Film.UserNotes != _originalNotes;
+
+        if (hasChanges)
+        {
+            _showDiscardConfirm = true;
+        }
+        else
+        {
+            // no changes, close
+            OnClose.InvokeAsync();
+        }
+    }
+    
+    private async Task ConfirmClose()
+    {
+        if (Film != null)
+        {
+            // change back to original values
+            Film.UserRating = _originalRating;
+            Film.WatchDate = _originalDate;
+            Film.UserNotes = _originalNotes;
+        }
+        
+        _showDiscardConfirm = false;
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task SaveDiary()
+    {
+        // first check if date watched is valid
+        if (Film != null && Film.WatchDate.HasValue && Film.WatchDate.Value.Year < Film.Year)
+        {
+            _isDateInvalid = true;
+            
+            // change date back so it doesn't save bad date
+            Film.WatchDate = _originalDate; 
+            return;
+        }
+        
+        _isDateInvalid = false;
+        await OnClose.InvokeAsync();
+    }
+}

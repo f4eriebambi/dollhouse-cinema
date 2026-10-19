@@ -47,6 +47,10 @@ public class Film
         get { return imdbRating; }
         set { imdbRating = value; }
     }
+    
+    public int? UserRating { get; set; }
+    public string? UserNotes { get; set; }
+    public DateTime? WatchDate { get; set; }
 
     // constructor
     public Film(string title, int year, string genre, string description, string posterUrl)
