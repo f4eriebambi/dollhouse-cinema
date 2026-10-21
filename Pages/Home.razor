@@ -76,9 +76,9 @@
     </div>
 
     <div class="collection-grid">
-        @for (int i = 0; i < SampleData.CuratedCollections.Count; i++)
+        @foreach (var collection in SampleData.CuratedCollections)
         {
-            var collection = SampleData.CuratedCollections[i];
+            var currentIndex = SampleData.CuratedCollections.IndexOf(collection) + 1;
             var collectionImage = GetCollectionImage(collection.Title);
             var filmCount = SampleData.CollectionFilmIds.TryGetValue(collection.Title, out var filmIds)
                 ? filmIds.Count
@@ -92,7 +92,7 @@
                 </div>
 
                 <div class="collection-content">
-                    <div class="eyebrow">0@(i + 1)</div>
+                    <div class="eyebrow">0@(currentIndex)</div>
                     <h3>@collection.Title</h3>
                     <p>@collection.Description</p>
                     <p class="collection-count">@filmCount films</p>
