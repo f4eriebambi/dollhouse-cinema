@@ -6,7 +6,9 @@
 
 *a little home for your cinematic obsessions*
 
-Dollhouse cinema is a personal film discovery, collection and wathclist application. Built with C# and Blazor WebAssembly for SOA CA1.
+Dollhouse cinema is a personal film discovery, collection and wathclist application. Built with C# and Blazor WebAssembly for SOA CA1
+
+![dollhouse-cinema_demo.gif](wwwroot/dollhouse-cinema_demo.gif)
 
 ## features
 - search for films using the tmdb api

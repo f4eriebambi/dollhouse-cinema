@@ -4,8 +4,6 @@ obj/
 *.user
 *.suo
 *.userprefs
-
-## ide and editor files
 .vs/
 .idea/
 *.sln.iml
@@ -26,6 +24,5 @@ appsettings.Local.json
 secrets.json
 *.pfx
 
-## os noise
 Thumbs.db
 .DS_Store
