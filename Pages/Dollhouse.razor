@@ -19,7 +19,7 @@
     @* collection and keepsakes tabs *@
     <div class="tabs" style="display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin-bottom: 24px;">
         <button class="tab-btn @(_activeTab == "collections" ? "active" : "")" @onclick='() => SwitchTab("collections")'>my collections</button>
-        <button class="tab-btn @(_activeTab == "keepsakes" ? "active" : "")" @onclick='() => SwitchTab("keepsakes")'>keepsakes &#9825;</button>
+        <button class="tab-btn @(_activeTab == "keepsakes" ? "active" : "")" @onclick='() => SwitchTab("keepsakes")'>keepsakes ♡</button>
     </div>
 
     @* collections tab *@
@@ -31,14 +31,23 @@
                 @for (int i = 0; i < SampleData.CuratedCollections.Count; i++)
                 {
                     var collection = SampleData.CuratedCollections[i];
-                    var colourClass = SampleData.CollectionColours[i % SampleData.CollectionColours.Count];
-                    
-                    <article class="collection-card @colourClass" 
-                             @onclick="() => OpenCollection(collection.Title)" 
-                             style="cursor: pointer;">
-                        <div class="eyebrow">0@(i + 1)</div>
-                        <h3>@collection.Title</h3>
-                        <p>@collection.Description</p>
+                    var collectionImage = GetCollectionImage(collection.Title);
+                    var filmCount = SampleData.CollectionFilmIds.TryGetValue(collection.Title, out var filmIds)
+                        ? filmIds.Count
+                        : 0;
+
+                    <article class="collection-card"
+                             style="cursor: pointer;"
+                             @onclick="() => OpenCollection(collection.Title)">
+                        <div class="collection-image">
+                            <img src="@collectionImage" alt="" />
+                        </div>
+                        <div class="collection-content">
+                            <div class="eyebrow">0@(i + 1)</div>
+                            <h3>@collection.Title</h3>
+                            <p>@collection.Description</p>
+                            <p class="collection-count">@filmCount films</p>
+                        </div>
                     </article>
                 }
             </div>
@@ -87,7 +96,7 @@
         {
             <div class="status-box">
                 <div class="status-icon">🗝</div>
-                <h3>Your keepsakes are empty &lt;/3</h3>
+                <h3>Your keepsakes are empty</h3>
                 <p>tap the heart on a film to keep it here.</p>
             </div>
         }
@@ -120,9 +129,50 @@
 
     private List<Film> _favFilms = new();
 
+    [SupplyParameterFromQuery(Name = "collection")]
+    public string? CollectionFromQuery { get; set; }
+
+    private string? _lastOpenedCollection;
+
+    private string GetCollectionImage(string collectionTitle)
+    {
+        return collectionTitle switch
+        {
+            "comfort <333" => "/images/collections/comfort.jpg",
+            "gothic." => "/images/collections/gothic.jpg",
+            "im just a monster in love" => "/images/collections/monsterinlove.jpg",
+            "weird girl movies" => "/images/collections/weirdgirlmovies.jpg",
+            _ => "/images/placeholder.jpg"
+        };
+    }
+
     protected override void OnInitialized()
     {
         LoadFavorites();
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (string.IsNullOrWhiteSpace(CollectionFromQuery))
+        {
+            _lastOpenedCollection = null;
+            return;
+        }
+
+        if (_lastOpenedCollection == CollectionFromQuery)
+        {
+            return;
+        }
+        
+        if (!SampleData.CollectionFilmIds.ContainsKey(CollectionFromQuery))
+        {
+            return;
+        }
+
+        _lastOpenedCollection = CollectionFromQuery;
+        _activeTab = "collections";
+
+        await OpenCollection(CollectionFromQuery);
     }
 
     private void SwitchTab(string tab)

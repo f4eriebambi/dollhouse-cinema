@@ -1,6 +1,6 @@
 :root {
     /* color palette */
-    --cream: #f5eae5;
+    --cream: #f8f1ec;
     --pink: #d9a8b5;
     --pink-pale: #f1dfe3;
     --cherry: #713747;
@@ -296,37 +296,59 @@ main {
 
 /*  banner */
 .hero {
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    align-items: center;
+    gap: 24px;
     overflow: hidden;
     border-radius: 18px;
-    padding: 48px;
+    padding: 32px;
     background: var(--cherry);
-    color: #fff4ef;
+    color: var(--cream);
     box-shadow: var(--shadow-soft);
     margin-bottom: 40px;
 }
 
 .hero-content {
     max-width: 550px;
+    min-width: 0;
     position: relative;
     z-index: 1;
 }
 
-.hero .eyebrow {
-    color: #f0cbd4;
+.hero .eyebrow { 
+    color: var(--pink); 
 }
 
-.hero h1 {
-    color: #fff4ef;
-    margin-bottom: 12px;
+.hero h1 { 
+    color: var(--cream); 
+    margin-bottom: 12px; 
 }
 
 .hero p {
-    color: #f7e4e6;
-    font-size: 14px;
-    line-height: 1.7;
-    max-width: 420px;
-    margin-bottom: 20px;
+    color: var(--cream); 
+    font-size: 14px; 
+    line-height: 1.7; 
+    max-width: 420px; 
+    margin-bottom: 20px; 
+}
+
+.hero-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    max-height: 260px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.hero-image img {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: contain;
+    object-position: center;
 }
 
 /* sections */
@@ -399,89 +421,72 @@ main {
 
 
 /* collection cards */
-.collection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+.collection-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(min(55%, 500px), 1fr)); 
     gap: 14px;
 }
 
 .collection-card {
-    padding: 22px;
     border-radius: 12px;
-    border: 1px solid var(--line);
+    border: 1.5px dashed var(--line);
     background: var(--paper);
-    position: relative;
     overflow: hidden;
-    transition: border-color .15s, transform .15s, box-shadow .15s;
     min-height: 160px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: 40% 1fr;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
 }
 
 .collection-card:hover {
     transform: translateY(-2px);
 }
 
+.collection-image {
+    min-width: 0;
+    min-height: 160px;
+    background: var(--pink-pale);
+    overflow: hidden;
+}
+
+.collection-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.collection-content {
+    /*padding: 16px;*/
+    padding: 12px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.collection-content .eyebrow {
+    margin-bottom: 4px;
+}
+
 .collection-card h3 {
-    margin: 6px 0 8px;
-    font-size: 19px;
+    margin: 4px 0 8px;
+    font-size: 17px;
+    overflow-wrap: anywhere;
 }
 
 .collection-card p {
     font-size: 12px;
     line-height: 1.5;
     margin: 0;
-    opacity: .8;
 }
 
-/* collection cards palette */
-.colour-pink {
-    background: #F1DFE3;
-    border-color: #D9A8B5;
-    color: #392A30;
-}
-
-.colour-sage {
-    background: #EEF0E6;
-    border-color: #A5A18C;
-    color: #392A30;
-}
-
-.colour-lace {
-    background: #EADBCE;
-    border-color: #B89A85;
-    color: #392A30;
-}
-
-.colour-noir {
-    background: #30252B;
-    border-color: #5B414B;
-    color: #F5EAE5;
-}
-
-.colour-midnight {
-    background: #202E46;
-    border-color: #536780;
-    color: #F1EDF2;
-}
-
-.colour-cherry {
-    background: #713747;
-    border-color: #9B5B6C;
-    color: #FFF4EF;
-}
-
-.colour-lilac {
-    background: #E5DFF0;
-    border-color: #B6A5D0;
-    color: #443750;
-}
-
-.colour-rosewood {
-    background: #E7C6AD;
-    border-color: #BD8E70;
-    color: #533B30;
+.collection-count {
+    margin-top: 10px !important;
+    color: var(--muted);
+    font-size: 11px !important;
 }
 
 /* search bar */
@@ -570,7 +575,7 @@ main {
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(25, 15, 20, .5); /* dark transparent background */
+    background: rgba(25, 15, 20, .5); 
     display: grid;
     place-items: center;
     z-index: 100;

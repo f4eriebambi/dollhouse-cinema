@@ -16,6 +16,10 @@
             explore films ↗
         </NavLink>
     </div>
+
+    <div class="hero-image">
+        <img src="../images/lobby-hero.jpg" alt="" />
+    </div>
 </section>
 
 <section class="section">
@@ -75,12 +79,26 @@
         @for (int i = 0; i < SampleData.CuratedCollections.Count; i++)
         {
             var collection = SampleData.CuratedCollections[i];
-            var colourClass = SampleData.CollectionColours[i % SampleData.CollectionColours.Count];
-            <article class="collection-card @colourClass">
-                <div class="eyebrow">0@(i + 1)</div>
-                <h3>@collection.Title</h3>
-                <p>@collection.Description</p>
-            </article>
+            var collectionImage = GetCollectionImage(collection.Title);
+            var filmCount = SampleData.CollectionFilmIds.TryGetValue(collection.Title, out var filmIds)
+                ? filmIds.Count
+                : 0;
+
+            <NavLink class="collection-card"
+                     href="@($"/dollhouse?collection={Uri.EscapeDataString(collection.Title)}")">
+
+                <div class="collection-image">
+                    <img src="@collectionImage" alt="" />
+                </div>
+
+                <div class="collection-content">
+                    <div class="eyebrow">0@(i + 1)</div>
+                    <h3>@collection.Title</h3>
+                    <p>@collection.Description</p>
+                    <p class="collection-count">@filmCount films</p>
+                </div>
+
+            </NavLink>
         }
     </div>
 </section>
@@ -90,6 +108,18 @@
 @code {
     private List<Film>? _films;
     private Film? _selectedFilm;
+
+    private string GetCollectionImage(string collectionTitle)
+    {
+        return collectionTitle switch
+        {
+            "comfort <333" => "/images/collections/comfort.jpg",
+            "gothic." => "/images/collections/gothic.jpg",
+            "im just a monster in love" => "/images/collections/monsterinlove.jpg",
+            "weird girl movies" => "/images/collections/weirdgirlmovies.jpg",
+            _ => "/images/placeholder.jpg"
+        };
+    }
 
     protected override async Task OnInitializedAsync()
     {
