@@ -18,7 +18,7 @@
         <input 
             type="text" 
             class="field" 
-            placeholder="Search by title, year or genre ..." 
+            placeholder="Search by title ..." 
             @bind="_searchQuery" 
             @bind:event="oninput"
             @onkeydown="HandleKeyDown" />
@@ -73,8 +73,19 @@
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
-        _films = await TmdbService.GetFilmsByIdsAsync(SampleData.ExploreDefaultIds);
-        _isLoading = false;
+        try
+        {
+            _films = await TmdbService.GetFilmsByIdsAsync(SampleData.ExploreDefaultIds);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"failed to load explore films: {ex.Message}");
+            _films = new List<Film>();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     // search films based on user input

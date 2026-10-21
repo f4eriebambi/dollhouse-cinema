@@ -83,27 +83,15 @@
 
 @code {
     private Film? _editingFilm;
-    private Film? _confirmDelete;
     private bool _showConfirm = false;
     private Film? _filmToRemove;
     
-    private List<Film> WatchedFilms => WatchlistService.GetWatched();
+    private List<Film> WatchedFilms => WatchlistService.GetWatched().ToList();
     private int RatedCount => WatchedFilms.Count(f => f.UserRating != null);
 
     private void EditDiary(Film film)
     {
         _editingFilm = film;
-    }
-    
-    private void ConfirmRemove(Film film)
-    {
-        WatchlistService.UnmarkWatched(film);
-        _confirmDelete = null;
-    }
-
-    private void UnmarkWatched(Film film)
-    {
-        WatchlistService.UnmarkWatched(film);
     }
     
     private void AskToRemove(Film film)

@@ -31,7 +31,7 @@
                 @for (int i = 0; i < SampleData.CuratedCollections.Count; i++)
                 {
                     var collection = SampleData.CuratedCollections[i];
-                    var collectionImage = GetCollectionImage(collection.Title);
+                    var collectionImage = SampleData.GetCollectionImage(collection.Title);
                     var filmCount = SampleData.CollectionFilmIds.TryGetValue(collection.Title, out var filmIds)
                         ? filmIds.Count
                         : 0;
@@ -134,18 +134,6 @@
 
     private string? _lastOpenedCollection;
 
-    private string GetCollectionImage(string collectionTitle)
-    {
-        return collectionTitle switch
-        {
-            "comfort <333" => "/images/collections/comfort.jpg",
-            "gothic." => "/images/collections/gothic.jpg",
-            "im just a monster in love" => "/images/collections/monsterinlove.jpg",
-            "weird girl movies" => "/images/collections/weirdgirlmovies.jpg",
-            _ => "/images/placeholder.jpg"
-        };
-    }
-
     protected override void OnInitialized()
     {
         LoadFavorites();
@@ -188,7 +176,7 @@
 
     private void LoadFavorites()
     {
-        _favFilms = WatchlistService.GetFavorites();
+        _favFilms = WatchlistService.GetFavorites().ToList();
     }
 
     private async Task OpenCollection(string collectionName)
@@ -197,12 +185,22 @@
         _isLoading = true;
         _collectionFilms = new();
 
-        if (SampleData.CollectionFilmIds.TryGetValue(collectionName, out var ids))
+        try
         {
-            _collectionFilms = await TmdbService.GetFilmsByIdsAsync(ids);
+            if (SampleData.CollectionFilmIds.TryGetValue(collectionName, out var ids))
+            {
+                _collectionFilms = await TmdbService.GetFilmsByIdsAsync(ids);
+            }
         }
-
-        _isLoading = false;
+        catch (Exception ex)
+        {
+            Console.WriteLine($"failed to load collection films: {ex.Message}");
+            _collectionFilms = new List<Film>();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     private void CloseCollection()

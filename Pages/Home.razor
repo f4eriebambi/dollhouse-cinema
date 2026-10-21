@@ -79,7 +79,7 @@
         @foreach (var collection in SampleData.CuratedCollections)
         {
             var currentIndex = SampleData.CuratedCollections.IndexOf(collection) + 1;
-            var collectionImage = GetCollectionImage(collection.Title);
+            var collectionImage = SampleData.GetCollectionImage(collection.Title);
             var filmCount = SampleData.CollectionFilmIds.TryGetValue(collection.Title, out var filmIds)
                 ? filmIds.Count
                 : 0;
@@ -109,31 +109,27 @@
     private List<Film>? _films;
     private Film? _selectedFilm;
 
-    private string GetCollectionImage(string collectionTitle)
-    {
-        return collectionTitle switch
-        {
-            "comfort <333" => "/images/collections/comfort.jpg",
-            "gothic." => "/images/collections/gothic.jpg",
-            "im just a monster in love" => "/images/collections/monsterinlove.jpg",
-            "weird girl movies" => "/images/collections/weirdgirlmovies.jpg",
-            _ => "/images/placeholder.jpg"
-        };
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        // get the films from tmdb
-        _films = await TmdbService.GetFilmsByIdsAsync(SampleData.LobbyFilmIds);
-
-        // loop through and get imdb rating from omdb
-        if (_films != null)
+        try
         {
-            foreach (var film in _films)
+            // get the films from tmdb
+            _films = await TmdbService.GetFilmsByIdsAsync(SampleData.LobbyFilmIds);
+
+            // loop through and get imdb rating from omdb
+            if (_films != null)
             {
-                var rating = await OmdbService.GetImdbRatingAsync(film.Title, film.Year);
-                film.ImdbRating = rating;
+                foreach (var film in _films)
+                {
+                    var rating = await OmdbService.GetImdbRatingAsync(film.Title, film.Year);
+                    film.ImdbRating = rating;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"failed to load lobby films: {ex.Message}");
+            _films = new List<Film>();
         }
     }
 }

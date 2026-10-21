@@ -1,6 +1,6 @@
 namespace DollhouseCinema.Models;
 
-// for testing
+// a curated collection shown on the lobby and in the dollhouse
 public record SampleCollection(
     string Title,
     string Description

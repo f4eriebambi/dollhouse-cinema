@@ -60,7 +60,7 @@
               OnCancel="() => _showConfirm = false" />
 
 @code {
-    private List<Film> SavedFilms => WatchlistService.GetAll();
+    private List<Film> SavedFilms => WatchlistService.GetAll().ToList();
 
     private bool _showConfirm = false;
     private Film? _filmToRemove;

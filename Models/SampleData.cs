@@ -1,7 +1,6 @@
 namespace DollhouseCinema.Models;
 
-// sample model for testing
-// will replace with api data later
+// curated collections and tmdb film ids app uses
 public static class SampleData
 {
     public static List<SampleCollection> CuratedCollections { get; } = new()
@@ -68,4 +67,16 @@ public static class SampleData
         { "im just a monster in love", new List<int> { 791177, 993784, 399055 } },
         { "gothic.", new List<int> { 426063, 201085, 310131 } }
     };
+    
+    public static string GetCollectionImage(string collectionTitle)
+    {
+        return collectionTitle switch
+        {
+            "comfort <333" => "/images/collections/comfort.jpg",
+            "gothic." => "/images/collections/gothic.jpg",
+            "im just a monster in love" => "/images/collections/monsterinlove.jpg",
+            "weird girl movies" => "/images/collections/weirdgirlmovies.jpg",
+            _ => "/images/placeholder.jpg"
+        };
+    }
 }

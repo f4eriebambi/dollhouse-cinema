@@ -6,7 +6,12 @@ namespace DollhouseCinema.Services;
 
 public class TmdbService : ITmdbService
 {
-    // private properties
+    // urls
+    private static readonly string TMDB_URL = "https://api.themoviedb.org/3/";
+    private static readonly string IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    private static readonly string PLACEHOLDER_POSTER = "images/placeholder.jpg";
+
+    // private fields
     private readonly HttpClient _http;
     private readonly string _token;
     
@@ -35,6 +40,12 @@ public class TmdbService : ITmdbService
         return string.Join(" · ", names);
     }
 
+    // builds poster url or uses placeholder if no poster from tndb
+    private static string GetPosterUrl(string? posterPath)
+    {
+        return string.IsNullOrWhiteSpace(posterPath) ? PLACEHOLDER_POSTER : $"{IMAGE_URL}{posterPath}";
+    }
+
     // constructor
     public TmdbService(HttpClient http, IConfiguration config)
     {
@@ -45,7 +56,7 @@ public class TmdbService : ITmdbService
     public async Task<List<Film>> SearchMoviesAsync(string query)
     {
         // tmdb search https://developers.themoviedb.org/3/search/search-movies
-        var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.themoviedb.org/3/search/movie?query={Uri.EscapeDataString(query)}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{TMDB_URL}search/movie?query={Uri.EscapeDataString(query)}");
         
         request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
@@ -65,7 +76,7 @@ public class TmdbService : ITmdbService
             ParseYear(r.ReleaseDate),
             GetGenreNames(r.GenreIds),
             r.Overview,
-            string.IsNullOrEmpty(r.PosterPath) ? "images/placeholder.jpg" : $"https://image.tmdb.org/t/p/w500{r.PosterPath}" 
+            GetPosterUrl(r.PosterPath)
             )).ToList();
     }
     
@@ -76,7 +87,7 @@ public class TmdbService : ITmdbService
 
         foreach (var id in ids)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.themoviedb.org/3/movie/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{TMDB_URL}movie/{id}");
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
             var response = await _http.SendAsync(request);
@@ -98,7 +109,7 @@ public class TmdbService : ITmdbService
                 ParseYear(data.ReleaseDate),
                 genreString,
                 data.Overview,
-                string.IsNullOrEmpty(data.PosterPath) ? "images/placeholder.jpg" : $"https://image.tmdb.org/t/p/w500{data.PosterPath}"
+                GetPosterUrl(data.PosterPath)
             ));
         }
 
@@ -107,7 +118,7 @@ public class TmdbService : ITmdbService
 
     public static int ParseYear(string? releaseDate)
     {
-        if (string.IsNullOrEmpty(releaseDate) || releaseDate.Length < 4)
+        if (string.IsNullOrWhiteSpace(releaseDate) || releaseDate.Length < 4)
         {
             return 0;
         }

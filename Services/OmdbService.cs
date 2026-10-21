@@ -5,9 +5,14 @@ namespace DollhouseCinema.Services;
 
 public class OmdbService : IOmdbService
 {
+    // url
+    private static readonly string OMDB_URL = "https://www.omdbapi.com/";
+
+    // private fields
     private readonly HttpClient _http;
     private readonly string _apiKey;
 
+    // constructor
     public OmdbService(HttpClient http, IConfiguration config)
     {
         _http = http;
@@ -17,7 +22,7 @@ public class OmdbService : IOmdbService
     public async Task<string?> GetImdbRatingAsync(string title, int year)
     {
         // omdb uses query parameters , ahve to safely encode title
-        var url = $"https://www.omdbapi.com/?apikey={_apiKey}&t={Uri.EscapeDataString(title)}";
+        var url = $"{OMDB_URL}?apikey={_apiKey}&t={Uri.EscapeDataString(title)}";
         
         // if we have a year, add it to the url to help omdb pick the right film
         if (year > 0)
@@ -34,7 +39,7 @@ public class OmdbService : IOmdbService
         }
 
         // if rating is "N/A" , returns null
-        if (string.IsNullOrEmpty(response.ImdbRating) || response.ImdbRating == "N/A")
+        if (string.IsNullOrWhiteSpace(response.ImdbRating) || response.ImdbRating == "N/A")
         {
             return null;
         }
